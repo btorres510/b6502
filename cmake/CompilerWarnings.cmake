@@ -10,7 +10,7 @@ function(set_project_warnings project_name)
       -Wno-format-nonliteral
       -Wno-deprecated-register
       -Wno-gnu-anonymous-struct
-      -Wno-signed-enum-bitfield 
+      -Wno-signed-enum-bitfield
       -Wno-poison-system-directories
       -Wno-documentation-unknown-command
       -Wno-gnu-zero-variadic-macro-arguments

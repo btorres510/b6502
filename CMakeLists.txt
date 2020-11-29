@@ -46,10 +46,8 @@ find_package(SDL2 REQUIRED)
 
 target_include_directories(
   ${PROJECT_NAME}
-    PUBLIC 
-      $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-      $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
-      ${SDL2_INCLUDE_DIR}
+  PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+         $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}> ${SDL2_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARY})
