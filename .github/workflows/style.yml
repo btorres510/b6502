@@ -1,0 +1,28 @@
+name: Style
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: install dependencies
+      run: |
+        brew install clang-format sdl2
+        pip3 install cmake_format==0.6.11 pyyaml
+
+    - name: configure
+      run: cmake -Htest -Bbuild
+
+    - name: check style
+      run: cmake --build build --target check-format
