@@ -31,7 +31,6 @@ function(set_project_warnings project_name)
       -Wlogical-op
       -Wparentheses
       -Wtype-limits
-      -Wno-c99-compat
       -Wwrite-strings
       -Wpointer-arith
       -Wduplicated-cond
@@ -46,9 +45,7 @@ function(set_project_warnings project_name)
       -Wmissing-declarations
       -Wmissing-include-dirs
       -Wmisleading-indentation
-      -Wno-gnu-anonymous-struct
       -Werror=implicit-function-declaration
-      -Wno-gnu-zero-variadic-macro-arguments
   )
 
   if(MSVC)

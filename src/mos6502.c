@@ -2,9 +2,7 @@
 
 #include <stdbool.h>
 
-/// GCC's -Wconversion is a picky son of a bitch.
-#define U8(x) (uint8_t)(x)
-#define U16(x) (uint16_t)(x)
+/// Be warned, many explicit casts. GCC's -Wconversion is a picky son of a bitch.
 
 #define STACK(sp) (uint16_t)((sp) | 0x0100)
 
@@ -15,7 +13,7 @@
 static inline bool cross(uint16_t x, uint16_t y) { return (uint8_t)(x >> 8) != (uint8_t)(y >> 8); }
 
 static inline uint16_t read16(Bus* bus, uint16_t addr) {
-  return (uint16_t)((read(bus, (uint8_t)(addr + 1)) << 8) | read(bus, addr));
+  return (uint16_t)((read(bus, (uint16_t)(addr + 1)) << 8) | read(bus, addr));
 }
 
 static inline uint16_t buggy_read16(Bus* bus, uint16_t addr) {
@@ -56,8 +54,8 @@ static inline void zn(Mos6502* cpu, uint8_t val) {
 static void branch(Mos6502* cpu, bool condition) {
   if (condition) {
     cpu->cycles += 1;
-    int8_t offset = (int8_t)(read(cpu->bus, U16(cpu->pc - 1)));
-    uint16_t new_pc = U16(cpu->pc + offset);
+    int8_t offset = (int8_t)(read(cpu->bus, (uint16_t)(cpu->pc - 1)));
+    uint16_t new_pc = (uint16_t)(cpu->pc + offset);
     if (cross(cpu->pc, new_pc)) {
       cpu->cycles += 1;
     }
@@ -77,7 +75,7 @@ static inline void write_data(Mos6502* cpu) {
 static void interrupt(Mos6502* cpu, uint16_t vector) {
   cpu->cycles += 7;
   push16(cpu, cpu->pc);
-  if (read(cpu->bus, U16(cpu->pc - 2)) == 0x00) {  // if BRK
+  if (read(cpu->bus, (uint16_t)(cpu->pc - 2)) == 0x00) {  // if BRK
     push8(cpu, (uint8_t)(cpu->sr | 0x30));
   } else {
     push8(cpu, cpu->sr);
@@ -92,13 +90,13 @@ static void interrupt(Mos6502* cpu, uint16_t vector) {
 /////////////////////////////////////////////////
 
 static int absolute(Mos6502* cpu) {
-  cpu->addr = read16(cpu->bus, U16(cpu->pc + 1));
+  cpu->addr = read16(cpu->bus, (uint16_t)(cpu->pc + 1));
   cpu->data = read(cpu->bus, cpu->addr);
   return 0;
 }
 
 static int absx(Mos6502* cpu) {
-  uint16_t orig_addr = read16(cpu->bus, U16(cpu->pc + 1));
+  uint16_t orig_addr = read16(cpu->bus, (uint16_t)(cpu->pc + 1));
   cpu->addr = (uint16_t)(cpu->x + orig_addr);
   cpu->data = read(cpu->bus, cpu->addr);
   if (cross(orig_addr, cpu->addr)) {
@@ -108,7 +106,7 @@ static int absx(Mos6502* cpu) {
 }
 
 static int absy(Mos6502* cpu) {
-  uint16_t orig_addr = read16(cpu->bus, U16(cpu->pc + 1));
+  uint16_t orig_addr = read16(cpu->bus, (uint16_t)(cpu->pc + 1));
   cpu->addr = (uint16_t)(cpu->y + orig_addr);
   cpu->data = read(cpu->bus, cpu->addr);
   if (cross(orig_addr, cpu->addr)) {
@@ -123,14 +121,14 @@ static int acc(Mos6502* cpu) {
 }
 
 static int imm(Mos6502* cpu) {
-  cpu->data = read(cpu->bus, U16(cpu->pc + 1));
+  cpu->data = read(cpu->bus, (uint16_t)(cpu->pc + 1));
   return 0;
 }
 
 static int impl(Mos6502* UNUSED(cpu)) { return 0; }
 
 static int indidx(Mos6502* cpu) {
-  uint8_t ptr = read(cpu->bus, U16(cpu->pc + 1));
+  uint8_t ptr = read(cpu->bus, (uint16_t)(cpu->pc + 1));
   uint16_t ptr2 = read16(cpu->bus, ptr);
   cpu->addr = (uint16_t)(cpu->y + ptr2);
   cpu->data = read(cpu->bus, cpu->addr);
@@ -141,12 +139,12 @@ static int indidx(Mos6502* cpu) {
 }
 
 static int ind(Mos6502* cpu) {
-  cpu->addr = buggy_read16(cpu->bus, read16(cpu->bus, U16(cpu->pc + 1)));
+  cpu->addr = buggy_read16(cpu->bus, read16(cpu->bus, (uint16_t)(cpu->pc + 1)));
   return 0;
 }
 
 static int idxind(Mos6502* cpu) {
-  uint8_t ptr = cpu->x + read(cpu->bus, U16(cpu->pc + 1));
+  uint8_t ptr = cpu->x + read(cpu->bus, (uint16_t)(cpu->pc + 1));
   cpu->addr = read16(cpu->bus, (uint16_t)ptr);
   cpu->data = read(cpu->bus, cpu->addr);
   return 0;
@@ -161,14 +159,14 @@ static int zerop(Mos6502* cpu) {
 }
 
 static int zeropx(Mos6502* cpu) {
-  uint8_t addr = U8(cpu->x + read(cpu->bus, U16(cpu->pc + 1)));
+  uint8_t addr = (uint8_t)(cpu->x + read(cpu->bus, (uint16_t)(cpu->pc + 1)));
   cpu->addr = addr;
   cpu->data = read(cpu->bus, cpu->addr);
   return 0;
 }
 
 static int zeropy(Mos6502* cpu) {
-  uint8_t addr = U8(cpu->y + read(cpu->bus, U16(cpu->pc + 1)));
+  uint8_t addr = (uint8_t)(cpu->y + read(cpu->bus, (uint16_t)(cpu->pc + 1)));
   cpu->addr = addr;
   cpu->data = read(cpu->bus, cpu->addr);
   return 0;
@@ -255,7 +253,7 @@ static int op_bpl(Mos6502* cpu) {
 }
 
 static int op_brk(Mos6502* cpu) {
-  cpu->pc = U16(cpu->pc + 1);
+  cpu->pc = (uint16_t)(cpu->pc + 1);
   interrupt(cpu, IRQ_VECTOR);
   return 0;
 }
@@ -351,7 +349,7 @@ static int op_jmp(Mos6502* cpu) {
 }
 
 static int op_jsr(Mos6502* cpu) {
-  push16(cpu, U16(cpu->pc - 1));
+  push16(cpu, (uint16_t)(cpu->pc - 1));
   cpu->pc = cpu->addr;
   return 0;
 }
@@ -572,7 +570,7 @@ static int op_ins(Mos6502* cpu) {
 // https://www.pagetable.com/?p=39
 static int op_kil(Mos6502* cpu) {
   LOG_ERROR("KIL instruction! Please reset the emulator!\n");
-  LOG_ERROR("U16: 0x%04X\n", cpu->pc);
+  LOG_ERROR("PC: 0x%04X\n", cpu->pc);
   LOG_ERROR("State: A:0x%02X X:0x%02X Y:0x%02X SP:0x%02X SR:0x%02X\n", cpu->a, cpu->x, cpu->y,
             cpu->sp, cpu->sr);
   for (;;) {
@@ -839,7 +837,7 @@ void step(Mos6502* cpu) {
 
   int mode_cycles = (*opcodes[opcode].mode_handler)(cpu);
   cpu->cycles += opcodes[opcode].cycles;
-  cpu->pc = U16(cpu->pc + opcodes[opcode].length);
+  cpu->pc += (uint16_t)(opcodes[opcode].length);
   int opcode_cycles = (*opcodes[opcode].opcode_handler)(cpu);
 
   cpu->cycles += (uint32_t)(mode_cycles & opcode_cycles);
