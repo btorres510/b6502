@@ -31,6 +31,7 @@ function(set_project_warnings project_name)
       -Wlogical-op
       -Wparentheses
       -Wtype-limits
+      -Wno-c99-compat
       -Wwrite-strings
       -Wpointer-arith
       -Wduplicated-cond
