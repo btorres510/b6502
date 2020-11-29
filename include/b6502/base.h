@@ -128,7 +128,7 @@
  * @brief A dummy function that can be used as a reset/write function for read-only devices.
  * @param obj A pointer to an object.
  */
-inline void dummy(void* obj);
+void dummy(void* obj);
 
 /**
  * @brief Read the contents of a ROM into a memory device.
