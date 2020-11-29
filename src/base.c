@@ -20,4 +20,4 @@ int read_rom(const char *path, void *restrict dest, size_t size, size_t nmemb) {
   return 0;
 }
 
-inline void dummy(void *UNUSED(obj)) {}
+inline void dummy(void *obj) { (void)obj; }
