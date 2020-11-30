@@ -5,6 +5,7 @@ set(sources
     src/memory.c
     src/mos6502.c
     src/rc.c
+    src/reset_manager.c
 )
 
 set(headers
@@ -14,6 +15,7 @@ set(headers
     include/b6502/memory.h
     include/b6502/mos6502.h
     include/b6502/rc.h
+    include/b6502/reset_manager.h
 )
 
 set(standalone 
