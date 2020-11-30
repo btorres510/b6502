@@ -124,6 +124,12 @@
 #  define UNUSED_FUNCTION(x) UNUSED_##x
 #endif
 
+#ifdef __GNUC__
+#  define INLINE inline __attribute__((always_inline))
+#else
+#  define INLINE inline
+#endif
+
 /**
  * @brief A dummy function that can be used as a reset/write function for read-only devices.
  * @param obj A pointer to an object.
