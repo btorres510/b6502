@@ -32,12 +32,3 @@ void write(Bus *bus, uint16_t addr, uint8_t val) {
     c->write(bus->handlers[page], addr, val);
   }
 }
-
-void reset(Bus *bus) {
-  for (size_t i = 0; i < NUMBER_OF_PAGES; i++) {
-    Component *c = bus->handlers[i];
-    if (c->reset) {
-      c->reset(bus->handlers[i]);
-    }
-  }
-}
