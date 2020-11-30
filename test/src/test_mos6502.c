@@ -1,5 +1,6 @@
 #include "b6502/memory.h"
 #include "b6502/mos6502.h"
+#include "b6502/reset_manager.h"
 #include "unity.h"
 #include "unity_fixture.h"
 
@@ -7,16 +8,19 @@
 
 static Mos6502* cpu = NULL;
 static Memory* mem = NULL;
+static ResetManager* rm = NULL;
 
 TEST_GROUP(MOS6502);
 
 TEST_SETUP(MOS6502) {
-  cpu = mos6502_create();
-  mem = memory_generic_create(MEM_SIZE);
+  rm = reset_manager_create();
+  cpu = mos6502_create(rm);
+  mem = memory_generic_create(rm, MEM_SIZE);
   map_handler(cpu->bus, mem, 0, 0xFFFF);
 }
 
 TEST_TEAR_DOWN(MOS6502) {
+  rc_strong_release((void*)&rm);
   rc_strong_release((void*)&cpu);
   rc_strong_release((void*)&mem);
 }
