@@ -9,7 +9,7 @@
  *  @brief A generic struct for memory devices (RAM, ROM, etc.)
  */
 typedef struct {
-  struct Component base;
+  struct Component;
   size_t size;
   uint8_t* bytes;
 } Memory;
@@ -19,7 +19,7 @@ typedef struct {
  * @param size The size of the memory device.
  * @return The memory device that was created
  */
-Memory* memory_create(size_t size, reset_handler reset, read_handler read, write_handler write);
+Memory* memory_create(size_t size, read_handler read, write_handler write);
 
 /**
  * @brief A constructor for generic memory devices.
