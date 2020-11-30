@@ -21,4 +21,4 @@ typedef struct ResetManager {
 
 ResetManager* reset_manager_create(void);
 void add_rm_device(ResetManager* rm, void* obj, reset_handler reset);
-void reset(ResetManager* rm);
+void reset_devices(ResetManager* rm);

@@ -24,7 +24,7 @@ void add_rm_device(ResetManager* rm, void* obj, reset_handler reset) {
   rm->devices[rm->num_devices++].reset = reset;
 }
 
-void reset(ResetManager* rm) {
+void reset_devices(ResetManager* rm) {
   for (size_t i = 0; i < rm->num_devices; i++) {
     if (LIKELY(rm->devices[i].obj != NULL)) {
       void* obj = rm->devices[rm->num_devices].obj;
