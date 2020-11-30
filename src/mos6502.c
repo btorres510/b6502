@@ -1,6 +1,10 @@
 #include "b6502/mos6502.h"
 
 #include <stdbool.h>
+#include <string.h>
+
+#include "b6502/bus.h"
+#include "b6502/reset_manager.h"
 
 /// Be warned, many explicit casts. GCC's -Wconversion is a picky son of a bitch.
 
@@ -792,7 +796,7 @@ static const struct Opcode opcodes[NUM_OF_OPCODES] = {
     {"INC", kAbsX, 7, 3, &absx, &op_inc},     {"INS", kAbsX, 7, 3, &absx, &op_ins},
 };
 
-static void deinit(void* obj) {
+static void cpu_deinit(void* obj) {
   Mos6502* cpu = obj;
   for (size_t page = 0; page < NUMBER_OF_PAGES; page++) {
     rc_weak_release((void*)&cpu->bus->handlers[page]);
@@ -800,15 +804,25 @@ static void deinit(void* obj) {
   rc_strong_release((void*)&cpu->bus);
 }
 
+static void cpu_reset(void* obj) {
+  Mos6502* cpu = obj;
+  cpu->a = cpu->x = cpu->y = cpu->addr = cpu->data = 0;
+  cpu->sr = 0x34;
+  cpu->sp = 0xFD;
+  cpu->cycles = 8;
+  cpu->pc = read16(cpu->bus, RES_VECTOR);
+}
+
 /////////////////////////////////////////////////
 ///     Public API
 /////////////////////////////////////////////////
 
-Mos6502* mos6502_create(void) {
-  Mos6502* cpu = rc_alloc(sizeof(*cpu), deinit);
+Mos6502* mos6502_create(ResetManager* rm) {
+  Mos6502* cpu = rc_alloc(sizeof(*cpu), cpu_deinit);
   cpu->bus = rc_alloc(sizeof(*cpu->bus), NULL);
   cpu->sr = 0x34;
   cpu->sp = 0xFD;
+  add_rm_device(rm, cpu, cpu_reset);
   return cpu;
 }
 

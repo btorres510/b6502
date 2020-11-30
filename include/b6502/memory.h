@@ -4,6 +4,7 @@
 
 #include "b6502/base.h"
 #include "b6502/component.h"
+#include "b6502/reset_manager.h"
 
 /**
  *  @brief A generic struct for memory devices (RAM, ROM, etc.)
@@ -15,18 +16,27 @@ typedef struct {
 } Memory;
 
 /**
- * @brief A constructor for memory devices.
+ * @brief A constructor for read-only memory devices.
+ * @param size The size of the memory device.
+ * @param read The read-handler for the device.
+ * @return The memory device that was created
+ */
+Memory* rom_create(size_t size, read_handler read);
+
+/**
+ * @brief A constructor for volatile memory devices.
  * @param size The size of the memory device.
  * @return The memory device that was created
  */
-Memory* memory_create(size_t size, read_handler read, write_handler write);
+Memory* ram_create(ResetManager* rm, size_t size, read_handler read, write_handler write,
+                   reset_handler reset);
 
 /**
  * @brief A constructor for generic memory devices.
  * @param size The size of the memory device.
  * @return The memory device that was created
  */
-Memory* memory_generic_create(size_t size);
+Memory* memory_generic_create(ResetManager* rm, size_t size);
 
 /**
  * @brief A generic read function for memory devices

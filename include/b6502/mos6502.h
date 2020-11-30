@@ -5,6 +5,7 @@
 #include "b6502/base.h"
 #include "b6502/bus.h"
 #include "b6502/rc.h"
+#include "b6502/reset_manager.h"
 
 /**
  * @brief The location of the NMI vector.
@@ -97,7 +98,7 @@ typedef struct Mos6502 {
 /**
  * @brief Constructor for a MOS6502 object.
  */
-Mos6502* mos6502_create(void);
+Mos6502* mos6502_create(ResetManager* rm);
 
 /**
  * @brief Raise an IRQ
