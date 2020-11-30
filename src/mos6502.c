@@ -9,7 +9,6 @@
 /// Be warned, many explicit casts. GCC's -Wconversion is a picky son of a bitch.
 
 #define STACK(sp) (uint16_t)((sp) | 0x0100)
-#define POP_SR() (uint8_t)(pop8(cpu) & ~0x30)
 
 /////////////////////////////////////////////////
 ///     Helper functions
@@ -44,12 +43,16 @@ static inline uint16_t pop16(Mos6502* cpu) {
   return read16(cpu->bus, STACK(cpu->sp++));
 }
 
+static INLINE uint8_t pop_sr(Mos6502* cpu) { return (uint8_t)(pop8(cpu) & ~0x30); }
+
 static inline void push8(Mos6502* cpu, uint8_t val) { write(cpu->bus, STACK(cpu->sp--), val); }
 
 static inline void push16(Mos6502* cpu, uint16_t val) {
   write(cpu->bus, STACK(cpu->sp--), (uint8_t)(val >> 8));
   write(cpu->bus, STACK(cpu->sp--), (uint8_t)val);
 }
+
+static INLINE void push_sr(Mos6502* cpu) { push8(cpu, (uint8_t)(cpu->sr | 0x30)); }
 
 static inline void zn(Mos6502* cpu, uint8_t val) {
   set_flag(cpu, Z, val == 0x00);
@@ -81,7 +84,7 @@ static void interrupt(Mos6502* cpu, uint16_t vector) {
   cpu->cycles += 7;
   push16(cpu, cpu->pc);
   if (read(cpu->bus, (uint16_t)(cpu->pc - 2)) == 0x00) {  // if BRK
-    push8(cpu, (uint8_t)(cpu->sr | 0x30));
+    push_sr(cpu);
   } else {
     push8(cpu, cpu->sr);
   }
@@ -395,7 +398,7 @@ static int op_pha(Mos6502* cpu) {
 }
 
 static int op_php(Mos6502* cpu) {
-  push8(cpu, (uint8_t)(cpu->sr | 0x30));
+  push_sr(cpu);
   return 0;
 }
 
@@ -405,7 +408,7 @@ static int op_pla(Mos6502* cpu) {
 }
 
 static int op_plp(Mos6502* cpu) {
-  cpu->sr = POP_SR();
+  cpu->sr = pop_sr(cpu);
   return 0;
 }
 
@@ -428,7 +431,7 @@ static int op_ror(Mos6502* cpu) {
 }
 
 static int op_rti(Mos6502* cpu) {
-  cpu->sr = POP_SR();
+  cpu->sr = pop_sr(cpu);
   cpu->pc = pop16(cpu);
   return 0;
 }
