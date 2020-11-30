@@ -70,7 +70,7 @@
  *
  * This macro relies on the preprocessor variable DEBUG. Since this project is built
  * using CMake, you can set the preprocessor variable by adding in the root CMakeLists.txt:
- * target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG=1)
+ * target_compile_definitions(${PROJECT_NAME} PUBLIC DEBUG)
  */
 #ifdef DEBUG
 #  define LOG_DEBUG(fmt, ...)                                                               \
