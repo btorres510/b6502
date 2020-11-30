@@ -796,6 +796,10 @@ static const struct Opcode opcodes[NUM_OF_OPCODES] = {
     {"INC", kAbsX, 7, 3, &absx, &op_inc},     {"INS", kAbsX, 7, 3, &absx, &op_ins},
 };
 
+/////////////////////////////////////////////////
+///     Reset handler and Destructor
+/////////////////////////////////////////////////
+
 static void cpu_deinit(void* obj) {
   Mos6502* cpu = obj;
   for (size_t page = 0; page < NUMBER_OF_PAGES; page++) {
@@ -806,7 +810,8 @@ static void cpu_deinit(void* obj) {
 
 static void cpu_reset(void* obj) {
   Mos6502* cpu = obj;
-  cpu->a = cpu->x = cpu->y = cpu->addr = cpu->data = 0;
+  cpu->a = cpu->x = cpu->y = cpu->data = 0;
+  cpu->addr = 0;
   cpu->sr = 0x34;
   cpu->sp = 0xFD;
   cpu->cycles = 8;
