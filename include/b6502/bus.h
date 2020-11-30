@@ -37,8 +37,3 @@ uint8_t read(Bus* bus, uint16_t addr);
  * @param val The byte to write.
  */
 void write(Bus* bus, uint16_t addr, uint8_t val);
-
-/**
- * @brief Issue a reset to all the devices on the communication bus.
- */
-void reset(Bus* bus);
