@@ -4,10 +4,12 @@ function(set_project_warnings project_name)
   set(CLANG_WARNINGS
       -Weverything
       -Wno-padded
+      -fms-extensions
       -Wno-c99-compat
       -Wno-switch-enum
       -Wno-nested-anon-types
       -Wno-format-nonliteral
+      -Wno-microsoft-anon-tag
       -Wno-deprecated-register
       -Wno-gnu-anonymous-struct
       -Wno-signed-enum-bitfield
@@ -31,6 +33,7 @@ function(set_project_warnings project_name)
       -Wlogical-op
       -Wparentheses
       -Wtype-limits
+      -fms-extensions
       -Wwrite-strings
       -Wpointer-arith
       -Wduplicated-cond
