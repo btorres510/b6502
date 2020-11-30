@@ -9,7 +9,7 @@
 /**
  *  @brief A function variable that points to the reset function of a bus component
  */
-typedef uint8_t (*reset_handler)(void*);
+typedef void (*reset_handler)(void*);
 
 typedef struct ResetManager {
   size_t num_devices;
@@ -20,5 +20,5 @@ typedef struct ResetManager {
 } ResetManager;
 
 ResetManager* reset_manager_create(void);
-void add_device(ResetManager* rm, void* obj, reset_handler reset);
+void add_rm_device(ResetManager* rm, void* obj, reset_handler reset);
 void reset(ResetManager* rm);

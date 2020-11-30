@@ -18,9 +18,9 @@ ResetManager* reset_manager_create(void) {
   return rm;
 }
 
-void add_device(ResetManager* rm, void* obj, reset_handler reset) {
+void add_rm_device(ResetManager* rm, void* obj, reset_handler reset) {
   assert(rm->num_devices < MAX_DEVICES);
-  rm->devices[rm->num_devices].obj = obj;
+  rm->devices[rm->num_devices].obj = rc_weak_retain(obj);
   rm->devices[rm->num_devices++].reset = reset;
 }
 
