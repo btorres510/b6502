@@ -9,6 +9,7 @@
 /// Be warned, many explicit casts. GCC's -Wconversion is a picky son of a bitch.
 
 #define STACK(sp) (uint16_t)((sp) | 0x0100)
+#define POP_SR() (uint8_t)(pop8(cpu) & ~0x30)
 
 /////////////////////////////////////////////////
 ///     Helper functions
@@ -404,7 +405,7 @@ static int op_pla(Mos6502* cpu) {
 }
 
 static int op_plp(Mos6502* cpu) {
-  cpu->sr = (uint8_t)(pop8(cpu) | 0x30);
+  cpu->sr = POP_SR();
   return 0;
 }
 
@@ -427,7 +428,7 @@ static int op_ror(Mos6502* cpu) {
 }
 
 static int op_rti(Mos6502* cpu) {
-  cpu->sr = (uint8_t)(pop8(cpu) | 0x30);
+  cpu->sr = POP_SR();
   cpu->pc = pop16(cpu);
   return 0;
 }
