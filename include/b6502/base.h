@@ -124,6 +124,9 @@
 #  define UNUSED_FUNCTION(x) UNUSED_##x
 #endif
 
+/**
+ * @brief Always inline a function.
+ */
 #ifdef __GNUC__
 #  define INLINE inline __attribute__((always_inline))
 #else

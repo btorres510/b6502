@@ -11,6 +11,9 @@
  */
 typedef void (*reset_handler)(void*);
 
+/**
+ *  @brief A struct that keeps a list of devices to reset
+ */
 typedef struct ResetManager {
   size_t num_devices;
   struct {
@@ -19,6 +22,17 @@ typedef struct ResetManager {
   } devices[MAX_DEVICES];
 } ResetManager;
 
+/**
+ *  @brief Constructor for a reset manager.
+ */
 ResetManager* reset_manager_create(void);
+
+/**
+ *  @brief Add a device to the reset manager.
+ */
 void add_rm_device(ResetManager* rm, void* obj, reset_handler reset);
+
+/**
+ *  @brief Send a reset signal that will reset all devices in the list.
+ */
 void reset_devices(ResetManager* rm);
