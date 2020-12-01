@@ -18,7 +18,7 @@ void map_handler(Bus *bus, void *obj, uint16_t start, uint16_t end) {
 uint8_t read(Bus *bus, uint16_t addr) {
   size_t page = addr / NUMBER_OF_PAGES;
   Component *c = bus->handlers[page];
-  if (LIKELY(c != NULL)) {
+  if (LIKELY(c)) {
     return c->read(bus->handlers[page], addr);
   } else {
     return 0;

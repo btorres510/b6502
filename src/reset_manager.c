@@ -7,7 +7,7 @@
 static void deinit(void* obj) {
   ResetManager* rm = obj;
   for (size_t i = 0; i < rm->num_devices; i++) {
-    if (LIKELY(rm->devices[i].obj != NULL)) {
+    if (LIKELY(rm->devices[i].obj)) {
       rc_weak_release((void*)&rm->devices[i]);
     }
   }
@@ -26,7 +26,7 @@ void add_rm_device(ResetManager* rm, void* obj, reset_handler reset) {
 
 void reset_devices(ResetManager* rm) {
   for (size_t i = 0; i < rm->num_devices; i++) {
-    if (LIKELY(rm->devices[i].obj != NULL)) {
+    if (LIKELY(rm->devices[i].obj)) {
       void* obj = rm->devices[rm->num_devices].obj;
       reset_handler reset = rm->devices[rm->num_devices].reset;
       (reset)(obj);
