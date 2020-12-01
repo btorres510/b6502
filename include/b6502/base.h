@@ -32,11 +32,11 @@
  * @param x The conditional statement.
  */
 #ifdef __GNUC__
-#  define LIKELY(x) __builtin_expect((x), 1)
-#  define UNLIKELY(x) __builtin_expect((x), 0)
+#  define LIKELY(expr) __builtin_expect(!!(expr), 1)
+#  define UNLIKELY(expr) __builtin_expect(!!(expr), 0)
 #else
-#  define LIKELY(x) (x)
-#  define UNLIKELY(x) (x)
+#  define LIKELY(expr) (expr)
+#  define UNLIKELY(expr) (expr)
 #endif
 
 /**
