@@ -1,6 +1,15 @@
 #pragma once
 
-/// @file reset_manager.h
+/**
+ *  @file reset_manager.h
+ *  @brief A seperate struct to keep a list of devices that can be reset.
+ *
+ * Not all the components on a communication bus are able to be reset - a prime example
+ * being a cartridge. Additionally, the CPU is not mapped onto the communication bus, but it's a
+ * device that can be reset. This requires a seperate "Reset Manager" that can send a reset signals
+ * to all the possible devices that can be reset. A constructor for resettable devices will
+ * require a reset manager object to be passed in.
+ */
 
 #include "b6502/base.h"
 
