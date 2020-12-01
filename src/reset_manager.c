@@ -8,7 +8,7 @@ static void deinit(void* obj) {
   ResetManager* rm = obj;
   for (size_t i = 0; i < rm->num_devices; i++) {
     if (LIKELY(rm->devices[i].obj)) {
-      rc_weak_release((void*)&rm->devices[i]);
+      rc_weak_release((void*)&rm->devices[i].obj);
     }
   }
 }
