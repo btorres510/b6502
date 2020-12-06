@@ -6,12 +6,12 @@
 int read_rom(const char *path, void *restrict dest, size_t size, size_t nmemb) {
   FILE *f = fopen(path, "rb");
   if (!f) {
-    LOG_ERROR("Error opening file: %s", strerror(errno));
+    LOG_ERROR("Error opening file: %s\n", strerror(errno));
     return -1;
   }
 
   if (fread(dest, size, nmemb, f) != nmemb) {
-    LOG_ERROR("Unable to read in %zu bytes!", nmemb);
+    LOG_ERROR("Unable to read in %zu bytes!\n", nmemb);
     fclose(f);
     return -1;
   }
